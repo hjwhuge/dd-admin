@@ -11,6 +11,7 @@ import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
 import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
+import AES_crypto from '#/api/AES_crypto';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -31,9 +32,29 @@ export const useAuthStore = defineStore('auth', () => {
   ) {
     // 异步处理用户登录操作并获取 accessToken
     let userInfo: null | UserInfo = null;
+    console.log('params', params);
+
+    const encryptdPassword = AES_crypto.encrypt(
+      {
+        account: 'admin',
+        password: 'admin',
+      },
+      '',
+    );
+    console.log('eqweqweqweqwewq', encryptdPassword);
+
+    const decryptdPassword = AES_crypto.decrypt(encryptdPassword, '');
+    console.log(
+      'decryptdPassword',
+      decryptdPassword,
+      decryptdPassword.password,
+    );
+
+    const jsonData = JSON.stringify({ data: encryptdPassword });
+
     try {
       loginLoading.value = true;
-      const { accessToken } = await loginApi(params);
+      const { accessToken } = await loginApi(jsonData);
 
       // 如果成功获取到 accessToken
       if (accessToken) {
