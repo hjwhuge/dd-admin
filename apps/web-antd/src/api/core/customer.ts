@@ -9,10 +9,17 @@ export namespace DemoTableApi {
 }
 
 /**
- * 获取示例表格数据
+ * 获取客户资料表格数据
  */
-async function getExampleTableApi(params: DemoTableApi.PageFetchParams) {
-  return requestClient.get('/table/list', { params });
+async function getCustomerTableApi(data: DemoTableApi.PageFetchParams) {
+  return requestClient.post('/queryUser', data);
 }
 
-export { getExampleTableApi };
+/**
+ * 新增客户资料
+ */
+async function addCustomerApi(data: any) {
+  return requestClient.post('/addUser', data);
+}
+
+export { addCustomerApi, getCustomerTableApi };

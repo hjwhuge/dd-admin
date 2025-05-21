@@ -12,7 +12,7 @@ interface UserInfo extends BasicUserInfo {
   homePath: string;
 
   /**
-   * accessToken
+   * token
    */
   token: string;
 }

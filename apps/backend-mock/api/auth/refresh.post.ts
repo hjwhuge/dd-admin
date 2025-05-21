@@ -25,9 +25,9 @@ export default defineEventHandler(async (event) => {
   if (!findUser) {
     return forbiddenResponse(event);
   }
-  const accessToken = generateAccessToken(findUser);
+  const token = generateAccessToken(findUser);
 
   setRefreshTokenCookie(event, refreshToken);
 
-  return accessToken;
+  return token;
 });

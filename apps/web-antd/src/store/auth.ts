@@ -10,8 +10,7 @@ import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
-import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
-import AES_crypto from '#/api/AES_crypto';
+import { getUserInfoApi, loginApi } from '#/api';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -30,55 +29,23 @@ export const useAuthStore = defineStore('auth', () => {
     params: Recordable<any>,
     onSuccess?: () => Promise<void> | void,
   ) {
-    // 异步处理用户登录操作并获取 accessToken
-    let userInfo: null | UserInfo = null;
-    console.log('params', params);
-
-    const encryptdPassword = AES_crypto.encrypt(
-      {
-        account: 'admin',
-        password: 'admin',
-      },
-      '',
-    );
-    console.log('eqweqweqweqwewq', encryptdPassword);
-
-    const decryptdPassword = AES_crypto.decrypt(encryptdPassword, '');
-    console.log(
-      'decryptdPassword',
-      decryptdPassword,
-      decryptdPassword.password,
-    );
-
-    const jsonData = JSON.stringify({ data: encryptdPassword });
+    // 异步处理用户登录操作并获取 token
+    const userInfo: null | UserInfo = null;
 
     try {
       loginLoading.value = true;
-      const { accessToken } = await loginApi(jsonData);
+      const { token } = await loginApi(params);
 
-      // 如果成功获取到 accessToken
-      if (accessToken) {
-        accessStore.setAccessToken(accessToken);
-
-        // 获取用户信息并存储到 accessStore 中
-        const [fetchUserInfoResult, accessCodes] = await Promise.all([
-          fetchUserInfo(),
-          getAccessCodesApi(),
-        ]);
-
-        userInfo = fetchUserInfoResult;
-
-        userStore.setUserInfo(userInfo);
-        accessStore.setAccessCodes(accessCodes);
+      // 如果成功获取到 token
+      if (token) {
+        accessStore.setAccessToken(token);
 
         if (accessStore.loginExpired) {
           accessStore.setLoginExpired(false);
         } else {
           onSuccess
             ? await onSuccess?.()
-            : await router.push(
-                userInfo.homePath || preferences.app.defaultHomePath,
-              );
+            : await router.push(preferences.app.defaultHomePath);
         }
 
         if (userInfo?.realName) {
@@ -99,11 +66,11 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function logout(redirect: boolean = true) {
-    try {
-      await logoutApi();
-    } catch {
-      // 不做任何处理
-    }
+    // try {
+    //   await logoutApi();
+    // } catch {
+    //   // 不做任何处理
+    // }
     resetAllStores();
     accessStore.setLoginExpired(false);
 

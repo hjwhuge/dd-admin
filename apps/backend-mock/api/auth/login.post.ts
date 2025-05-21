@@ -24,13 +24,13 @@ export default defineEventHandler(async (event) => {
     return forbiddenResponse(event, 'Username or password is incorrect.');
   }
 
-  const accessToken = generateAccessToken(findUser);
+  const token = generateAccessToken(findUser);
   const refreshToken = generateRefreshToken(findUser);
 
   setRefreshTokenCookie(event, refreshToken);
 
   return useResponseSuccess({
     ...findUser,
-    accessToken,
+    token,
   });
 });

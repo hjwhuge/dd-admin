@@ -7,10 +7,10 @@ import type {
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, message, Popconfirm } from 'ant-design-vue';
+import { Button, Popconfirm } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getExampleTableApi } from '#/api';
+import { getCustomerTableApi } from '#/api';
 
 import FormModalDemo from './customer-operate.vue';
 
@@ -74,7 +74,8 @@ const gridOptions: VxeTableGridOptions<RowType> = {
   },
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { align: 'left', field: 'userName', title: '客户名称', type: 'checkbox' },
+    // { title: '序号', type: 'checkbox', width: 50 },
+    { align: 'left', field: 'userName', title: '客户名称' },
     { field: 'userShortName', title: '客户简称' },
     { field: 'managerName', title: '联系人员姓名' },
     { field: 'userType', title: '客户类型' },
@@ -99,14 +100,21 @@ const gridOptions: VxeTableGridOptions<RowType> = {
   keepSource: true,
   pagerConfig: {},
   proxyConfig: {
+    response: {
+      result: 'data',
+      total: 'totalSize',
+      list: 'data',
+    },
     ajax: {
       query: async ({ page }, formValues) => {
-        message.success(`Query params: ${JSON.stringify(formValues)}`);
-        return await getExampleTableApi({
+        // message.success(`Query params: ${JSON.stringify(formValues)}`);
+        const resData = await getCustomerTableApi({
           page: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
         });
+        console.log(resData);
+        return resData;
       },
     },
   },
@@ -117,14 +125,15 @@ const gridOptions: VxeTableGridOptions<RowType> = {
     resizable: true,
     search: false,
     zoom: false,
-    buttons: [{ name: '新增', code: 'myAdd', status: 'primary' }],
+    buttons: [{ name: '新增', code: 'add', status: 'primary' }],
   },
 };
 
 const gridEvents: VxeGridListeners = {
   toolbarButtonClick(params) {
-    console.log(params.code);
-    openFormModal();
+    if (params.code === 'add') {
+      openFormModal();
+    }
   },
 };
 

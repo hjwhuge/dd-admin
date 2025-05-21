@@ -15,6 +15,7 @@ import { useAccessStore } from '@vben/stores';
 
 import { message } from 'ant-design-vue';
 
+import AES_crypto from '#/api/AES_crypto';
 import { useAuthStore } from '#/store';
 
 import { refreshTokenApi } from './core';
@@ -57,7 +58,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   }
 
   function formatToken(token: null | string) {
-    return token ? `Bearer ${token}` : null;
+    return token ? `${token}` : null;
   }
 
   // 请求头处理
@@ -65,10 +66,15 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     fulfilled: async (config) => {
       const accessStore = useAccessStore();
 
-      config.headers.Authorization = formatToken(accessStore.accessToken);
+      config.headers.token = formatToken(accessStore.token);
       config.headers['Accept-Language'] = preferences.app.locale;
       config.headers['Content-Type'] = 'application/json';
       config.headers.timestamp = Date.now();
+
+      const encryptdPassword = AES_crypto.encrypt(config.data, '');
+      const jsonData = JSON.stringify({ data: encryptdPassword });
+      config.data = jsonData;
+
       return config;
     },
   });
@@ -77,8 +83,12 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   client.addResponseInterceptor(
     defaultResponseInterceptor({
       codeField: 'code',
-      dataField: 'data',
-      successCode: 0,
+      dataField: (response) => {
+        const decryptdPassword = AES_crypto.decrypt(response.data, '');
+
+        return decryptdPassword;
+      },
+      successCode: 200,
     }),
   );
 

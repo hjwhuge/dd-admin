@@ -178,9 +178,9 @@ export async function loginApi(data: AuthApi.LoginParams) {
   return requestClient.post<AuthApi.LoginResult>('/auth/login', data);
 }
 
-/** 只需要保证登录接口返回值有 `accessToken` 字段即可 */
+/** 只需要保证登录接口返回值有 `token` 字段即可 */
 export interface LoginResult {
-  accessToken: string;
+  token: string;
 }
 ```
 

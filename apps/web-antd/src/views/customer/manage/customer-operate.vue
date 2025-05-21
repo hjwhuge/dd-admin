@@ -4,6 +4,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
+import { addCustomerApi } from '#/api';
 
 defineOptions({
   name: 'FormModelDemo',
@@ -114,14 +115,30 @@ function onSubmit(values: Record<string, any>) {
     key: 'is-form-submitting',
   });
   modalApi.lock();
-  setTimeout(() => {
-    modalApi.close();
-    message.success({
-      content: `提交成功：${JSON.stringify(values)}`,
-      duration: 2,
-      key: 'is-form-submitting',
+  // const resData = await addCustomerApi({
+  //   page: page.currentPage,
+  //   pageSize: page.pageSize,
+  //   ...formValues,
+  // });
+  addCustomerApi(values)
+    .then(() => {
+      message.success({
+        content: `提交成功：${JSON.stringify(values)}`,
+        duration: 2,
+        key: 'is-form-submitting',
+      });
+    })
+    .catch(() => {
+      modalApi.close();
     });
-  }, 3000);
+  // setTimeout(() => {
+  //   modalApi.close();
+  //   message.success({
+  //     content: `提交成功：${JSON.stringify(values)}`,
+  //     duration: 2,
+  //     key: 'is-form-submitting',
+  //   });
+  // }, 3000);
 }
 </script>
 <template>

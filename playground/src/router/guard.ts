@@ -50,7 +50,7 @@ function setupAccessGuard(router: Router) {
     const authStore = useAuthStore();
     // 基本路由，这些路由不需要进入权限拦截
     if (coreRouteNames.includes(to.name as string)) {
-      if (to.path === LOGIN_PATH && accessStore.accessToken) {
+      if (to.path === LOGIN_PATH && accessStore.token) {
         return decodeURIComponent(
           (to.query?.redirect as string) ||
             userStore.userInfo?.homePath ||
@@ -60,8 +60,8 @@ function setupAccessGuard(router: Router) {
       return true;
     }
 
-    // accessToken 检查
-    if (!accessStore.accessToken) {
+    // token 检查
+    if (!accessStore.token) {
       // 明确声明忽略权限访问权限，则可以访问
       if (to.meta.ignoreAccess) {
         return true;
