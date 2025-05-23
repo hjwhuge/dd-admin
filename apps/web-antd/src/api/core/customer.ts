@@ -9,9 +9,9 @@ export namespace DemoTableApi {
 }
 
 /**
- * 获取客户资料表格数据
+ * 获取客户资料
  */
-async function getCustomerTableApi(data: DemoTableApi.PageFetchParams) {
+async function getCustomerApi(data: DemoTableApi.PageFetchParams) {
   return requestClient.post('/queryUser', data);
 }
 
@@ -22,4 +22,18 @@ async function addCustomerApi(data: any) {
   return requestClient.post('/addUser', data);
 }
 
-export { addCustomerApi, getCustomerTableApi };
+/**
+ * 修改客户资料
+ */
+async function editCustomerApi(data: any) {
+  return requestClient.post('/upUser', data);
+}
+
+/**
+ * 删除客户资料
+ */
+async function delCustomerApi(data: any) {
+  return requestClient.post('/deleteUser', data);
+}
+
+export { addCustomerApi, delCustomerApi, editCustomerApi, getCustomerApi };

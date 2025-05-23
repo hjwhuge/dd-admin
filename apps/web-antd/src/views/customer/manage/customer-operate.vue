@@ -122,6 +122,7 @@ function onSubmit(values: Record<string, any>) {
   // });
   addCustomerApi(values)
     .then(() => {
+      modalApi.close();
       message.success({
         content: `提交成功：${JSON.stringify(values)}`,
         duration: 2,

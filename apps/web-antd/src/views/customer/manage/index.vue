@@ -10,7 +10,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, Popconfirm } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getCustomerTableApi } from '#/api';
+import { delCustomerApi, getCustomerApi } from '#/api';
 
 import FormModalDemo from './customer-operate.vue';
 
@@ -108,7 +108,7 @@ const gridOptions: VxeTableGridOptions<RowType> = {
     ajax: {
       query: async ({ page }, formValues) => {
         // message.success(`Query params: ${JSON.stringify(formValues)}`);
-        const resData = await getCustomerTableApi({
+        const resData = await getCustomerApi({
           page: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
@@ -140,7 +140,9 @@ const gridEvents: VxeGridListeners = {
 // 修改客户
 
 const customerDel = () => {
-  console.log(6666);
+  delCustomerApi()
+    .then(() => {})
+    .catch(() => {});
 };
 
 const [Grid] = useVbenVxeGrid({
