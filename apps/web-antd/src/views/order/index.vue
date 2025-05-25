@@ -13,7 +13,7 @@ import { Button, message, Popconfirm } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { delCustomerApi, getCustomerApi } from '#/api';
 
-import FormModalEdit from './form.vue';
+import FormModalEdit from './customer-operate.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: FormModalEdit,
@@ -99,6 +99,7 @@ const gridOptions: VxeTableGridOptions<CustomerApi.RowType> = {
     },
     ajax: {
       query: async ({ page }, formValues) => {
+        // message.success(`Query params: ${JSON.stringify(formValues)}`);
         const resData = await getCustomerApi({
           page: page.currentPage,
           pageSize: page.pageSize,

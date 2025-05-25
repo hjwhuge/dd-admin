@@ -6,7 +6,7 @@ export namespace CustomerApi {
     page: number;
     pageSize: number;
   }
-  export interface PageResParams {
+  export interface RowType {
     userCode?: string;
     userName: string;
     userShortName: string;
@@ -22,16 +22,19 @@ export namespace CustomerApi {
     remark: string;
     action: string;
   }
+  export interface PageResult {
+    data: Array<RowType>;
+    page: number;
+    pageSize: number;
+    totalSize: number;
+  }
 }
 
 /**
  * 获取客户资料
  */
 async function getCustomerApi(data: CustomerApi.PageFetchParams) {
-  return requestClient.post<Array<CustomerApi.PageResParams>>(
-    '/queryUser',
-    data,
-  );
+  return requestClient.post<CustomerApi.PageResult>('/queryUser', data);
 }
 
 /**

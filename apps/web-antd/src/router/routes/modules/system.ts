@@ -4,19 +4,19 @@ const routes: RouteRecordRaw[] = [
   {
     meta: {
       icon: 'lucide:layout-dashboard',
-      order: 1,
-      title: '客户管理',
+      order: 3,
+      title: '系统设置',
     },
-    name: 'Customer',
-    path: '/customer',
+    name: 'System',
+    path: '/system',
     children: [
       {
-        name: 'Manage',
-        path: '/customer/manage',
-        component: () => import('#/views/customer/index.vue'),
+        name: 'User',
+        path: '/user',
+        component: () => import('#/views/system/user/index.vue'),
         meta: {
           icon: 'lucide:area-chart',
-          title: '客户资料',
+          title: '用户管理',
         },
       },
     ],

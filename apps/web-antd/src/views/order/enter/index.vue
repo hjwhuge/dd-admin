@@ -4,14 +4,14 @@ import type {
   VxeGridListeners,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import type { CustomerApi } from '#/api';
+import type { orderApi } from '#/api';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { Button, message, Popconfirm } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { delCustomerApi, getCustomerApi } from '#/api';
+import { deletePutInStorage, queryPutInStorage } from '#/api';
 
 import FormModalEdit from './form.vue';
 
@@ -22,6 +22,9 @@ const [FormModal, formModalApi] = useVbenModal({
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: true,
+  fieldMappingTime: [
+    ['rangePicker', ['startTime', 'endTime'], 'YYYY-MM-DD hh:mm:ss'],
+  ],
   schema: [
     {
       component: 'Input',
@@ -30,8 +33,29 @@ const formOptions: VbenFormProps = {
     },
     {
       component: 'Input',
-      fieldName: 'merchandiser',
-      label: '厂内跟单人员',
+      fieldName: 'productName',
+      label: '产品名称',
+    },
+    {
+      component: 'Input',
+      fieldName: 'selfOrderNumber',
+      label: '厂内单号',
+    },
+    {
+      component: 'Input',
+      fieldName: 'customerOderNumber',
+      label: '来货单号',
+    },
+    {
+      component: 'RangePicker',
+      componentProps: {
+        // 显示的时间格式
+        showTime: {
+          format: 'YYYY-MM-DD HH:mm:ss',
+        },
+      },
+      fieldName: 'rangePicker',
+      label: '入货时间',
     },
   ],
   // 控制表单是否显示折叠按钮
@@ -45,17 +69,17 @@ const formOptions: VbenFormProps = {
 const StatusOptions = [
   {
     color: 'success',
-    label: '已启用',
+    label: '已审批',
     value: true,
   },
   {
     color: 'error',
-    label: '已禁用',
+    label: '未审批',
     value: false,
   },
 ];
 
-const gridOptions: VxeTableGridOptions<CustomerApi.RowType> = {
+const gridOptions: VxeTableGridOptions<orderApi.RowType> = {
   checkboxConfig: {
     highlight: true,
     labelField: 'userName',
@@ -63,22 +87,26 @@ const gridOptions: VxeTableGridOptions<CustomerApi.RowType> = {
   columns: [
     { title: '序号', type: 'seq', width: 50 },
     { field: 'userName', title: '客户名称', type: 'checkbox', align: 'left' },
-    // { field: 'userName', title: '客户名称', align: 'left' },
-    { field: 'userShortName', title: '客户简称' },
-    { field: 'managerName', title: '联系人员姓名' },
-    { slots: { default: 'userType' }, field: 'userType', title: '客户类型' },
-    { field: 'managerPhone', title: '联系人员电话' },
-    { field: 'address', title: '客户地址' },
-    { field: 'merchandiser', title: '厂内跟单人员' },
-    { field: 'line', title: '线路' },
-    { field: 'fax', title: '传真' },
-    { field: 'emailAddress', title: '电子邮箱' },
+    { field: 'productName', title: '产品名称' },
+    { field: 'customerOderNumber', title: '来货单号' },
+    { field: 'color', title: '颜色' },
+    { field: 'specification', title: '规格' },
+    { field: 'quantity', title: '数量' },
+    { field: 'price', title: '单价' },
+    { field: 'packagesNumber', title: '件数' },
+    { field: 'unit', title: '单位/KG' },
+    { field: 'basicPrice', title: '基本费用' },
+    { field: 'remark', title: '备注' },
+    { field: 'selfOrderNumber', title: '厂内订单号' },
+    { field: 'examinePerson', title: '审批人员' },
+    { field: 'examineTime', title: '审批时间' },
     {
       cellRender: { name: 'CellTag', options: StatusOptions },
-      field: 'enble',
-      title: '客户状态',
+      field: 'examineStatus',
+      title: '审批状态',
     },
-    { field: 'remark', title: '备注' },
+    { field: 'printNumber', title: '打印次数' },
+    { field: 'amount', title: '金额' },
     {
       slots: { default: 'action' },
       field: 'action',
@@ -99,7 +127,7 @@ const gridOptions: VxeTableGridOptions<CustomerApi.RowType> = {
     },
     ajax: {
       query: async ({ page }, formValues) => {
-        const resData = await getCustomerApi({
+        const resData = await queryPutInStorage({
           page: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
@@ -116,7 +144,7 @@ const gridOptions: VxeTableGridOptions<CustomerApi.RowType> = {
     search: false,
     zoom: false,
     buttons: [
-      { name: '新增', code: 'add', status: 'primary' },
+      { name: '入货登记', code: 'add', status: 'primary' },
       { name: '删除', code: 'del', status: 'danger' },
     ],
   },
@@ -131,7 +159,7 @@ const gridEvents: VxeGridListeners = {
       const checkboxRecords = gridApi.grid.getCheckboxRecords();
       if (checkboxRecords && checkboxRecords.length > 0) {
         const params = checkboxRecords
-          .map((item: CustomerApi.RowType) => item.userCode)
+          .map((item: orderApi.RowType) => item.selfOrderNumber)
           .join(',');
         customerDel(params);
       }
@@ -143,13 +171,13 @@ const customerAdd = () => {
   formModalApi.setData(null).open();
 };
 
-const customerEdit = (row: CustomerApi.RowType) => {
+const customerEdit = (row: orderApi.RowType) => {
   formModalApi.setData(row).open();
 };
 
 // 删除客户
-const customerDel = (userCodes: string) => {
-  delCustomerApi({ userCodes })
+const customerDel = (selfOrderNumbers: string) => {
+  deletePutInStorage({ selfOrderNumbers })
     .then(() => {
       message.success('删除成功');
       gridApi.query();
@@ -174,16 +202,13 @@ function refreshGrid() {
 <template>
   <Page auto-content-height>
     <Grid>
-      <template #userType="{ row }">
-        <span>{{ row.userType === '0' ? '普通客户' : '特殊客户' }}</span>
-      </template>
       <template #action="{ row }">
         <Button type="link" @click="customerEdit(row)">编辑</Button>
         <Popconfirm
           title="确定要删除吗?"
           ok-text="确定"
           cancel-text="取消"
-          @confirm="customerDel(row.userCode)"
+          @confirm="customerDel(row.selfOrderNumber)"
         >
           <Button type="link" danger>删除</Button>
         </Popconfirm>

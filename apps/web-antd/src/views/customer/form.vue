@@ -17,6 +17,14 @@ defineOptions({
 const emit = defineEmits(['success']);
 
 const [Form, formApi] = useVbenForm({
+  commonConfig: {
+    // 在label后显示一个冒号
+    colon: true,
+    // 所有表单项
+    componentProps: {
+      class: 'w-full',
+    },
+  },
   schema: [
     {
       component: 'Input',
@@ -129,7 +137,7 @@ const [Modal, modalApi] = useVbenModal({
   },
   onOpenChange(isOpen: boolean) {
     if (isOpen) {
-      const data = modalApi.getData<CustomerApi.PageResParams>();
+      const data = modalApi.getData<CustomerApi.RowType>();
       if (data) {
         formData.value = data;
         formApi.setValues(formData.value);
@@ -139,10 +147,10 @@ const [Modal, modalApi] = useVbenModal({
   title: '新增客户',
 });
 
-const formData = ref<CustomerApi.PageResParams>();
+const formData = ref<CustomerApi.RowType>();
 
 const getTitle = computed(() => {
-  return formData.value?.userCode ? '新增客户' : '编辑客户';
+  return formData.value?.userCode ? '编辑客户' : '新增客户';
 });
 </script>
 <template>
