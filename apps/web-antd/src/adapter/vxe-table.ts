@@ -1,8 +1,10 @@
 import { h } from 'vue';
 
 import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
+import { get } from '@vben/utils';
 
-import { Button, Image } from 'ant-design-vue';
+import { objectOmit } from '@vueuse/core';
+import { Button, Image, Tag } from 'ant-design-vue';
 
 import { useVbenForm } from './form';
 
@@ -52,6 +54,26 @@ setupVbenVxeTable({
           Button,
           { size: 'small', type: 'link' },
           { default: () => props?.text },
+        );
+      },
+    });
+
+    // 单元格渲染： Tag
+    vxeUI.renderer.add('CellTag', {
+      renderTableDefault({ options, props }, { column, row }) {
+        const value = get(row, column.field);
+        const tagOptions = options ?? [
+          { color: 'success', label: '已启用', value: 1 },
+          { color: 'error', label: '已禁用', value: 0 },
+        ];
+        const tagItem = tagOptions.find((item) => item.value === value);
+        return h(
+          Tag,
+          {
+            ...props,
+            ...objectOmit(tagItem ?? {}, ['label']),
+          },
+          { default: () => tagItem?.label ?? value },
         );
       },
     });

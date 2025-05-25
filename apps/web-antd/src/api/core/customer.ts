@@ -1,18 +1,37 @@
 import { requestClient } from '#/api/request';
 
-export namespace DemoTableApi {
+export namespace CustomerApi {
   export interface PageFetchParams {
     [key: string]: any;
     page: number;
     pageSize: number;
+  }
+  export interface PageResParams {
+    userCode?: string;
+    userName: string;
+    userShortName: string;
+    managerName: string;
+    userType: string;
+    managerPhone: string;
+    address: string;
+    merchandiser: string;
+    line: string;
+    fax: string;
+    emailAddress: string;
+    enble: string;
+    remark: string;
+    action: string;
   }
 }
 
 /**
  * 获取客户资料
  */
-async function getCustomerApi(data: DemoTableApi.PageFetchParams) {
-  return requestClient.post('/queryUser', data);
+async function getCustomerApi(data: CustomerApi.PageFetchParams) {
+  return requestClient.post<Array<CustomerApi.PageResParams>>(
+    '/queryUser',
+    data,
+  );
 }
 
 /**

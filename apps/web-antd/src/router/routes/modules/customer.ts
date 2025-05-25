@@ -13,7 +13,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'Manage',
         path: '/manage',
-        component: () => import('#/views/customer/manage/index.vue'),
+        component: () => import('#/views/customer/index.vue'),
         meta: {
           affixTab: true,
           icon: 'lucide:area-chart',

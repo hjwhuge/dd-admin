@@ -4,10 +4,11 @@ import type {
   VxeGridListeners,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
+import type { CustomerApi } from '#/api';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, Popconfirm } from 'ant-design-vue';
+import { Button, message, Popconfirm } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { delCustomerApi, getCustomerApi } from '#/api';
@@ -17,31 +18,6 @@ import FormModalDemo from './customer-operate.vue';
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: FormModalDemo,
 });
-
-const openFormModal = () => {
-  formModalApi
-    .setData({
-      // 表单值
-      values: { field1: 'abc', field2: '123' },
-    })
-    .open();
-};
-
-interface RowType {
-  userName: string;
-  userShortName: string;
-  managerName: string;
-  userType: string;
-  managerPhone: string;
-  address: string;
-  merchandiser: string;
-  line: string;
-  fax: string;
-  emailAddress: string;
-  enble: string;
-  remark: string;
-  action: string;
-}
 
 const formOptions: VbenFormProps = {
   // 默认展开
@@ -67,25 +43,42 @@ const formOptions: VbenFormProps = {
   submitOnEnter: true,
 };
 
-const gridOptions: VxeTableGridOptions<RowType> = {
+const StatusOptions = [
+  {
+    color: 'success',
+    label: '已启用',
+    value: true,
+  },
+  {
+    color: 'error',
+    label: '已禁用',
+    value: false,
+  },
+];
+
+const gridOptions: VxeTableGridOptions<CustomerApi.PageResParams> = {
   checkboxConfig: {
     highlight: true,
-    labelField: 'name',
+    labelField: 'userName',
   },
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    // { title: '序号', type: 'checkbox', width: 50 },
-    { align: 'left', field: 'userName', title: '客户名称' },
+    { field: 'userName', title: '客户名称', type: 'checkbox', align: 'left' },
+    // { field: 'userName', title: '客户名称', align: 'left' },
     { field: 'userShortName', title: '客户简称' },
     { field: 'managerName', title: '联系人员姓名' },
-    { field: 'userType', title: '客户类型' },
+    { slots: { default: 'userType' }, field: 'userType', title: '客户类型' },
     { field: 'managerPhone', title: '联系人员电话' },
     { field: 'address', title: '客户地址' },
     { field: 'merchandiser', title: '厂内跟单人员' },
     { field: 'line', title: '线路' },
     { field: 'fax', title: '传真' },
     { field: 'emailAddress', title: '电子邮箱' },
-    { field: 'enble', title: '客户状态' },
+    {
+      cellRender: { name: 'CellTag', options: StatusOptions },
+      field: 'enble',
+      title: '客户状态',
+    },
     { field: 'remark', title: '备注' },
     {
       slots: { default: 'action' },
@@ -113,7 +106,6 @@ const gridOptions: VxeTableGridOptions<RowType> = {
           pageSize: page.pageSize,
           ...formValues,
         });
-        console.log(resData);
         return resData;
       },
     },
@@ -125,48 +117,80 @@ const gridOptions: VxeTableGridOptions<RowType> = {
     resizable: true,
     search: false,
     zoom: false,
-    buttons: [{ name: '新增', code: 'add', status: 'primary' }],
+    buttons: [
+      { name: '新增', code: 'add', status: 'primary' },
+      { name: '删除', code: 'del', status: 'danger' },
+    ],
   },
 };
 
 const gridEvents: VxeGridListeners = {
   toolbarButtonClick(params) {
     if (params.code === 'add') {
-      openFormModal();
+      customerAdd();
+    }
+    if (params.code === 'del') {
+      const checkboxRecords = gridApi.grid.getCheckboxRecords();
+      if (checkboxRecords && checkboxRecords.length > 0) {
+        const params = checkboxRecords
+          .map((item: CustomerApi.PageResParams) => item.userCode)
+          .join(',');
+        customerDel(params);
+      }
     }
   },
 };
 
-// 修改客户
+const customerAdd = () => {
+  formModalApi.setData(null).open();
+};
 
-const customerDel = () => {
-  delCustomerApi()
-    .then(() => {})
+const customerEdit = (row: CustomerApi.PageResParams) => {
+  formModalApi.setData(row).open();
+};
+
+// 删除客户
+const customerDel = (userCodes: string) => {
+  delCustomerApi({ userCodes })
+    .then(() => {
+      message.success('删除成功');
+      gridApi.query();
+    })
     .catch(() => {});
 };
 
-const [Grid] = useVbenVxeGrid({
+const [Grid, gridApi] = useVbenVxeGrid({
   formOptions,
   gridOptions,
   gridEvents,
 });
+
+/**
+ * 刷新表格
+ */
+function refreshGrid() {
+  gridApi.query();
+}
 </script>
 
 <template>
   <Page auto-content-height>
     <Grid>
-      <template #action>
-        <Button type="link" @click="openFormModal">编辑</Button>
+      <template #userType="{ row }">
+        <span>{{ row.userType === '0' ? '普通客户' : '特殊客户' }}</span>
+      </template>
+      <template #action="{ row }">
+        <Button type="link" @click="customerEdit(row)">编辑</Button>
         <Popconfirm
           title="确定要删除吗?"
           ok-text="确定"
           cancel-text="取消"
-          @confirm="customerDel"
+          @confirm="customerDel(row.userCode)"
         >
           <Button type="link" danger>删除</Button>
         </Popconfirm>
       </template>
     </Grid>
-    <FormModal />
+    <FormModal @success="refreshGrid" />
   </Page>
 </template>

@@ -73,6 +73,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
 
       const encryptdPassword = AES_crypto.encrypt(config.data, '');
       const jsonData = JSON.stringify({ data: encryptdPassword });
+      // console.log('queryData', config.data);
       config.data = jsonData;
 
       return config;
@@ -85,7 +86,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       codeField: 'code',
       dataField: (response) => {
         const decryptdPassword = AES_crypto.decrypt(response.data, '');
-
+        // console.log('responseData', decryptdPassword);
         return decryptdPassword;
       },
       successCode: 200,
@@ -108,6 +109,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     errorMessageResponseInterceptor((msg: string, error) => {
       // 这里可以根据业务进行定制,你可以拿到 error 内的信息进行定制化处理，根据不同的 code 做不同的提示，而不是直接使用 message.error 提示 msg
       // 当前mock接口返回的错误字段是 error 或者 message
+      // console.log(msg, error);
       const responseData = error?.response?.data ?? {};
       const errorMessage = responseData?.error ?? responseData?.message ?? '';
       // 如果没有错误信息，则会根据状态码进行提示

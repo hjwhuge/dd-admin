@@ -1,17 +1,22 @@
 <script lang="ts" setup>
+import type { CustomerApi } from '#/api';
+
+import { computed, ref } from 'vue';
+
 import { useVbenModal } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { addCustomerApi } from '#/api';
+import { addCustomerApi, editCustomerApi } from '#/api';
 
 defineOptions({
   name: 'FormModelDemo',
 });
 
+const emit = defineEmits(['success']);
+
 const [Form, formApi] = useVbenForm({
-  handleSubmit: onSubmit,
   schema: [
     {
       component: 'Input',
@@ -95,55 +100,53 @@ const [Modal, modalApi] = useVbenModal({
   },
   onConfirm: async () => {
     await formApi.validateAndSubmitForm();
-    // modalApi.close();
+
+    const { valid } = await formApi.validate();
+    if (valid) {
+      modalApi.lock();
+      const data = await formApi.getValues();
+      try {
+        await (formData.value?.userCode
+          ? editCustomerApi({
+              userCode: formData.value?.userCode,
+              ...data,
+            }).then(() => {
+              message.success({
+                content: '更新成功',
+              });
+            })
+          : addCustomerApi(data).then(() => {
+              message.success({
+                content: '新增成功',
+              });
+            }));
+        modalApi.close();
+        emit('success');
+      } finally {
+        modalApi.lock(false);
+      }
+    }
   },
   onOpenChange(isOpen: boolean) {
     if (isOpen) {
-      const { values } = modalApi.getData<Record<string, any>>();
-      if (values) {
-        formApi.setValues(values);
+      const data = modalApi.getData<CustomerApi.PageResParams>();
+      if (data) {
+        formData.value = data;
+        formApi.setValues(formData.value);
       }
     }
   },
   title: '新增客户',
 });
 
-function onSubmit(values: Record<string, any>) {
-  message.loading({
-    content: '正在提交中...',
-    duration: 0,
-    key: 'is-form-submitting',
-  });
-  modalApi.lock();
-  // const resData = await addCustomerApi({
-  //   page: page.currentPage,
-  //   pageSize: page.pageSize,
-  //   ...formValues,
-  // });
-  addCustomerApi(values)
-    .then(() => {
-      modalApi.close();
-      message.success({
-        content: `提交成功：${JSON.stringify(values)}`,
-        duration: 2,
-        key: 'is-form-submitting',
-      });
-    })
-    .catch(() => {
-      modalApi.close();
-    });
-  // setTimeout(() => {
-  //   modalApi.close();
-  //   message.success({
-  //     content: `提交成功：${JSON.stringify(values)}`,
-  //     duration: 2,
-  //     key: 'is-form-submitting',
-  //   });
-  // }, 3000);
-}
+const formData = ref<CustomerApi.PageResParams>();
+
+const getTitle = computed(() => {
+  return formData.value?.userCode ? '新增客户' : '编辑客户';
+});
 </script>
 <template>
-  <Modal>
+  <Modal :title="getTitle">
     <Form />
   </Modal>
 </template>
