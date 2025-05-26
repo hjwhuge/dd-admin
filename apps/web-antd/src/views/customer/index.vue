@@ -13,10 +13,10 @@ import { Button, message, Popconfirm } from 'ant-design-vue';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { delCustomerApi, getCustomerApi } from '#/api';
 
-import FormModalEdit from './form.vue';
+import FormModalCustomer from './form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
-  connectedComponent: FormModalEdit,
+  connectedComponent: FormModalCustomer,
 });
 
 const formOptions: VbenFormProps = {

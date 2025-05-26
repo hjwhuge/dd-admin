@@ -11,15 +11,6 @@ const routes: RouteRecordRaw[] = [
     path: '/order',
     children: [
       {
-        name: 'Pound',
-        path: '/order/pound',
-        component: () => import('#/views/order/index.vue'),
-        meta: {
-          icon: 'lucide:area-chart',
-          title: '磅货管理',
-        },
-      },
-      {
         name: 'Enter',
         path: '/order/enter',
         component: () => import('#/views/order/enter/index.vue'),

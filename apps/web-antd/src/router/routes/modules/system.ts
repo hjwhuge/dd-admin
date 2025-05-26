@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'User',
-        path: '/user',
+        path: '/system/user',
         component: () => import('#/views/system/user/index.vue'),
         meta: {
           icon: 'lucide:area-chart',

@@ -11,12 +11,21 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, message, Popconfirm } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deletePutInStorage, queryPutInStorage } from '#/api';
+import {
+  deletePutInStorage,
+  putInStorageExamine,
+  queryPutInStorage,
+} from '#/api';
 
 import FormModalEdit from './form.vue';
+import FormModalPoundEdit from './formPound.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: FormModalEdit,
+});
+
+const [FormModalPound, formModalPoundApi] = useVbenModal({
+  connectedComponent: FormModalPoundEdit,
 });
 
 const formOptions: VbenFormProps = {
@@ -112,7 +121,9 @@ const gridOptions: VxeTableGridOptions<orderApi.RowType> = {
       field: 'action',
       fixed: 'right',
       title: '操作',
-      width: 180,
+      width: 260,
+      headerAlign: 'center',
+      align: 'left',
     },
   ],
   exportConfig: {},
@@ -153,7 +164,7 @@ const gridOptions: VxeTableGridOptions<orderApi.RowType> = {
 const gridEvents: VxeGridListeners = {
   toolbarButtonClick(params) {
     if (params.code === 'add') {
-      customerAdd();
+      oderAdd();
     }
     if (params.code === 'del') {
       const checkboxRecords = gridApi.grid.getCheckboxRecords();
@@ -161,28 +172,46 @@ const gridEvents: VxeGridListeners = {
         const params = checkboxRecords
           .map((item: orderApi.RowType) => item.selfOrderNumber)
           .join(',');
-        customerDel(params);
+        oderDel(params);
       }
     }
   },
 };
 
-const customerAdd = () => {
+const oderAdd = () => {
   formModalApi.setData(null).open();
 };
 
-const customerEdit = (row: orderApi.RowType) => {
+const oderEdit = (row: orderApi.RowType) => {
   formModalApi.setData(row).open();
 };
 
 // 删除客户
-const customerDel = (selfOrderNumbers: string) => {
+const oderDel = (selfOrderNumbers: string) => {
   deletePutInStorage({ selfOrderNumbers })
     .then(() => {
       message.success('删除成功');
       gridApi.query();
     })
     .catch(() => {});
+};
+
+// 入货审批
+const orderExamine = (row: orderApi.RowType) => {
+  putInStorageExamine({
+    selfOrderNumber: row.selfOrderNumber,
+    examineStatus: !row.examineStatus,
+  })
+    .then(() => {
+      message.success('审批成功');
+      gridApi.query();
+    })
+    .catch(() => {});
+};
+
+// 磅货
+const pound = (row: orderApi.RowType) => {
+  formModalPoundApi.setData(row).open();
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -203,17 +232,22 @@ function refreshGrid() {
   <Page auto-content-height>
     <Grid>
       <template #action="{ row }">
-        <Button type="link" @click="customerEdit(row)">编辑</Button>
+        <Button type="link" @click="oderEdit(row)">编辑</Button>
         <Popconfirm
           title="确定要删除吗?"
           ok-text="确定"
           cancel-text="取消"
-          @confirm="customerDel(row.selfOrderNumber)"
+          @confirm="oderDel(row.selfOrderNumber)"
         >
           <Button type="link" danger>删除</Button>
         </Popconfirm>
+        <Button type="link" @click="orderExamine(row)">
+          {{ row.examineStatus ? '取消审批' : '审批' }}
+        </Button>
+        <Button type="link" @click="pound(row)"> 磅货 </Button>
       </template>
     </Grid>
     <FormModal @success="refreshGrid" />
+    <FormModalPound @success="refreshGrid" />
   </Page>
 </template>

@@ -1,6 +1,6 @@
 import { requestClient } from '#/api/request';
 
-export namespace orderApi {
+export namespace UserApi {
   export interface PageFetchParams {
     [key: string]: any;
     page: number;
@@ -37,8 +37,8 @@ export namespace orderApi {
 /**
  * 获取入货列表
  */
-async function queryPutInStorage(data: orderApi.PageFetchParams) {
-  return requestClient.post<Array<orderApi.PageResult>>(
+async function queryPutInStorage(data: UserApi.PageFetchParams) {
+  return requestClient.post<Array<UserApi.PageResult>>(
     '/queryPutInStorage',
     data,
   );
