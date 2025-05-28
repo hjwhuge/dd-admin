@@ -7,24 +7,10 @@ export namespace UserApi {
     pageSize: number;
   }
   export interface RowType {
-    uuserCode?: string;
-    userName: string;
-    productName: string;
-    customerOderNumber: string;
-    color: string;
-    specification: string;
-    quantity: number;
-    price: number;
-    packagesNumber: number;
-    unit: string;
-    basicPrice: number;
-    remark: string;
-    selfOrderNumber: string;
-    examinePerson: string;
-    examineTime: string;
-    examineStatus: boolean;
-    printNumber: number;
-    amount: number;
+    account: string;
+    password: string;
+    userType: string;
+    _X_ROW_KEY: string;
   }
   export interface PageResult {
     data: Array<RowType>;
@@ -35,63 +21,30 @@ export namespace UserApi {
 }
 
 /**
- * 获取入货列表
+ * 管理员查询账号列表
  */
-async function queryPutInStorage(data: UserApi.PageFetchParams) {
-  return requestClient.post<Array<UserApi.PageResult>>(
-    '/queryPutInStorage',
-    data,
-  );
+async function queryAcount(data: UserApi.PageFetchParams) {
+  return requestClient.post<Array<UserApi.PageResult>>('/queryAcount', data);
 }
 
 /**
- * 入货
+ * 管理员增加账号
  */
-async function putInStorage(data: any) {
-  return requestClient.post('/putInStorage', data);
+async function addAccount(data: any) {
+  return requestClient.post('/addAcount', data);
 }
 
 /**
- * 入货审批
+ * 修改登录密码
  */
-async function putInStorageExamine(data: any) {
-  return requestClient.post('/putInStorageExamine', data);
+async function upPassword(data: any) {
+  return requestClient.post('/upPassword', data);
 }
 
 /**
- * 编辑入货
+ * 删除账号
  */
-async function editPutInStorage(data: any) {
-  return requestClient.post('/editePutInStorage', data);
+async function deleteAcount(data: any) {
+  return requestClient.post('/deleteAcount', data);
 }
-
-/**
- * 删除入货
- */
-async function deletePutInStorage(data: any) {
-  return requestClient.post('/deletePutInStorage', data);
-}
-
-/**
- * 磅货
- */
-async function addOutStorage(data: any) {
-  return requestClient.post('/addOutStorage', data);
-}
-
-/**
- * 出货列表
- */
-async function queryOutStorage(data: any) {
-  return requestClient.post('/queryOutStorage', data);
-}
-
-export {
-  addOutStorage,
-  deletePutInStorage,
-  editPutInStorage,
-  putInStorage,
-  putInStorageExamine,
-  queryOutStorage,
-  queryPutInStorage,
-};
+export { addAccount, deleteAcount, queryAcount, upPassword };

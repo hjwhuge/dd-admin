@@ -4,16 +4,16 @@ import type {
   VxeGridListeners,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import type { CustomerApi } from '#/api';
+import type { UserApi } from '#/api';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { Button, message, Popconfirm } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { delCustomerApi, getCustomerApi } from '#/api';
+import { deleteAcount, queryAcount } from '#/api';
 
-import FormModalEdit from './customer-operate.vue';
+import FormModalEdit from './form.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: FormModalEdit,
@@ -25,13 +25,8 @@ const formOptions: VbenFormProps = {
   schema: [
     {
       component: 'Input',
-      fieldName: 'userName',
-      label: '客户名称',
-    },
-    {
-      component: 'Input',
-      fieldName: 'merchandiser',
-      label: '厂内跟单人员',
+      fieldName: 'account',
+      label: '账号',
     },
   ],
   // 控制表单是否显示折叠按钮
@@ -42,43 +37,16 @@ const formOptions: VbenFormProps = {
   submitOnEnter: true,
 };
 
-const StatusOptions = [
-  {
-    color: 'success',
-    label: '已启用',
-    value: true,
-  },
-  {
-    color: 'error',
-    label: '已禁用',
-    value: false,
-  },
-];
-
-const gridOptions: VxeTableGridOptions<CustomerApi.RowType> = {
+const gridOptions: VxeTableGridOptions<UserApi.RowType> = {
   checkboxConfig: {
     highlight: true,
-    labelField: 'userName',
+    labelField: 'account',
   },
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { field: 'userName', title: '客户名称', type: 'checkbox', align: 'left' },
-    // { field: 'userName', title: '客户名称', align: 'left' },
-    { field: 'userShortName', title: '客户简称' },
-    { field: 'managerName', title: '联系人员姓名' },
-    { slots: { default: 'userType' }, field: 'userType', title: '客户类型' },
-    { field: 'managerPhone', title: '联系人员电话' },
-    { field: 'address', title: '客户地址' },
-    { field: 'merchandiser', title: '厂内跟单人员' },
-    { field: 'line', title: '线路' },
-    { field: 'fax', title: '传真' },
-    { field: 'emailAddress', title: '电子邮箱' },
-    {
-      cellRender: { name: 'CellTag', options: StatusOptions },
-      field: 'enble',
-      title: '客户状态',
-    },
-    { field: 'remark', title: '备注' },
+    { field: 'account', title: '账号', type: 'checkbox', align: 'left' },
+    { field: 'password', title: '密码' },
+    { slots: { default: 'userType' }, field: 'userType', title: '账号类型' },
     {
       slots: { default: 'action' },
       field: 'action',
@@ -100,7 +68,7 @@ const gridOptions: VxeTableGridOptions<CustomerApi.RowType> = {
     ajax: {
       query: async ({ page }, formValues) => {
         // message.success(`Query params: ${JSON.stringify(formValues)}`);
-        const resData = await getCustomerApi({
+        const resData = await queryAcount({
           page: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
@@ -132,7 +100,7 @@ const gridEvents: VxeGridListeners = {
       const checkboxRecords = gridApi.grid.getCheckboxRecords();
       if (checkboxRecords && checkboxRecords.length > 0) {
         const params = checkboxRecords
-          .map((item: CustomerApi.RowType) => item.userCode)
+          .map((item: UserApi.RowType) => item.account)
           .join(',');
         customerDel(params);
       }
@@ -144,13 +112,13 @@ const customerAdd = () => {
   formModalApi.setData(null).open();
 };
 
-const customerEdit = (row: CustomerApi.RowType) => {
+const customerEdit = (row: UserApi.RowType) => {
   formModalApi.setData(row).open();
 };
 
 // 删除客户
 const customerDel = (userCodes: string) => {
-  delCustomerApi({ userCodes })
+  deleteAcount({ userCodes })
     .then(() => {
       message.success('删除成功');
       gridApi.query();
@@ -176,10 +144,10 @@ function refreshGrid() {
   <Page auto-content-height>
     <Grid>
       <template #userType="{ row }">
-        <span>{{ row.userType === '0' ? '普通客户' : '特殊客户' }}</span>
+        <span>{{ row.userType === '0' ? '管理员' : '普通账户' }}</span>
       </template>
       <template #action="{ row }">
-        <Button type="link" @click="customerEdit(row)">编辑</Button>
+        <Button type="link" @click="customerEdit(row)">修改密码</Button>
         <Popconfirm
           title="确定要删除吗?"
           ok-text="确定"

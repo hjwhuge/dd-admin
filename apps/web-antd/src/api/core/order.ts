@@ -86,10 +86,18 @@ async function queryOutStorage(data: any) {
   return requestClient.post('/queryOutStorage', data);
 }
 
+/**
+ * 导出出货列表
+ */
+async function exportOutStorage(data: any) {
+  return requestClient.post('/exportOutStorage', data);
+}
+
 export {
   addOutStorage,
   deletePutInStorage,
   editPutInStorage,
+  exportOutStorage,
   putInStorage,
   putInStorageExamine,
   queryOutStorage,
