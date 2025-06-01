@@ -17,6 +17,16 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'lucide:area-chart',
           title: '用户管理',
+          authority: ['super'],
+        },
+      },
+      {
+        name: 'Logs',
+        path: '/system/log',
+        component: () => import('#/views/system/logs/index.vue'),
+        meta: {
+          icon: 'lucide:area-chart',
+          title: '日志列表',
         },
       },
     ],

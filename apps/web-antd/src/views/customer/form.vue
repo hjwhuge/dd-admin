@@ -128,7 +128,7 @@ const [Modal, modalApi] = useVbenModal({
                 content: '新增成功',
               });
             }));
-        modalApi.close();
+        // modalApi.close();
         emit('success');
       } finally {
         modalApi.lock(false);

@@ -8,7 +8,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { addAccount } from '#/api';
+import { upPassword } from '#/api';
 
 defineOptions({
   name: 'FormModelDemo',
@@ -31,28 +31,14 @@ const [Form, formApi] = useVbenForm({
       componentProps: {
         placeholder: '请输入',
       },
-      fieldName: 'account',
-      label: '账号',
+      fieldName: 'passowrd',
+      label: '原密码',
       rules: 'required',
     },
     {
       component: 'Input',
-      fieldName: 'password',
-      label: '密码',
-      rules: 'required',
-    },
-    {
-      component: 'Select',
-      componentProps: {
-        options: [
-          { label: '普通账户', value: '1' },
-          { label: '管理员', value: '0' },
-        ],
-        placeholder: '请输入',
-        width: 400,
-      },
-      fieldName: 'userType',
-      label: '账号类型',
+      fieldName: 'newPassword',
+      label: '新密码',
       rules: 'required',
     },
   ],
@@ -72,9 +58,9 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock();
       const data = await formApi.getValues();
       try {
-        await addAccount(data).then(() => {
+        await upPassword(data).then(() => {
           message.success({
-            content: '新增成功',
+            content: '修改成功',
           });
         });
         modalApi.close();
@@ -93,7 +79,7 @@ const [Modal, modalApi] = useVbenModal({
       }
     }
   },
-  title: '新增账号',
+  title: '修改密码',
 });
 
 const formData = ref<UserApi.RowType>();

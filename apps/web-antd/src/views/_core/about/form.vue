@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UserApi } from '#/api';
+import type { CustomerApi } from '#/api';
 
 import { ref } from 'vue';
 
@@ -8,7 +8,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { addAccount } from '#/api';
+import { setNetworkInfo } from '#/api';
 
 defineOptions({
   name: 'FormModelDemo',
@@ -28,31 +28,32 @@ const [Form, formApi] = useVbenForm({
   schema: [
     {
       component: 'Input',
-      componentProps: {
-        placeholder: '请输入',
-      },
-      fieldName: 'account',
-      label: '账号',
+      fieldName: 'ethIp',
+      label: '有线网络Ip',
       rules: 'required',
     },
     {
       component: 'Input',
-      fieldName: 'password',
-      label: '密码',
+      fieldName: 'ethGateway',
+      label: '有线网络网关',
       rules: 'required',
     },
     {
-      component: 'Select',
-      componentProps: {
-        options: [
-          { label: '普通账户', value: '1' },
-          { label: '管理员', value: '0' },
-        ],
-        placeholder: '请输入',
-        width: 400,
-      },
-      fieldName: 'userType',
-      label: '账号类型',
+      component: 'Input',
+      fieldName: 'ethMask',
+      label: '有线网络掩码',
+      rules: 'required',
+    },
+    {
+      component: 'Input',
+      fieldName: 'ethDNS1',
+      label: '有线网络DNS1',
+      rules: 'required',
+    },
+    {
+      component: 'Input',
+      fieldName: 'ethDNS2',
+      label: '有线网络DNS2',
       rules: 'required',
     },
   ],
@@ -72,9 +73,9 @@ const [Modal, modalApi] = useVbenModal({
       modalApi.lock();
       const data = await formApi.getValues();
       try {
-        await addAccount(data).then(() => {
+        await setNetworkInfo(data).then(() => {
           message.success({
-            content: '新增成功',
+            content: '设置成功',
           });
         });
         modalApi.close();
@@ -86,20 +87,20 @@ const [Modal, modalApi] = useVbenModal({
   },
   onOpenChange(isOpen: boolean) {
     if (isOpen) {
-      const data = modalApi.getData<UserApi.RowType>();
+      const data = modalApi.getData<CustomerApi.RowType>();
       if (data) {
         formData.value = data;
         formApi.setValues(formData.value);
       }
     }
   },
-  title: '新增账号',
+  title: '新增客户',
 });
 
-const formData = ref<UserApi.RowType>();
+const formData = ref<CustomerApi.RowType>();
 </script>
 <template>
-  <Modal>
+  <Modal title="设置有线网络">
     <Form />
   </Modal>
 </template>

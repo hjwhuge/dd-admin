@@ -10,6 +10,7 @@ export namespace AuthApi {
   /** 登录接口返回值 */
   export interface LoginResult {
     token: string;
+    userType: string;
   }
 
   export interface RefreshTokenResult {

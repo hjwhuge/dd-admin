@@ -35,6 +35,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'lucide:area-chart',
           title: '订单统计',
+          authority: ['super'],
         },
       },
     ],

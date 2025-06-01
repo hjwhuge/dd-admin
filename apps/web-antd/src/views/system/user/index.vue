@@ -14,9 +14,13 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteAcount, queryAcount } from '#/api';
 
 import FormModalEdit from './form.vue';
+import FormModalPassword from './formPassword.vue';
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: FormModalEdit,
+});
+const [FormModalPd, formModalApiPassword] = useVbenModal({
+  connectedComponent: FormModalPassword,
 });
 
 const formOptions: VbenFormProps = {
@@ -113,12 +117,12 @@ const customerAdd = () => {
 };
 
 const customerEdit = (row: UserApi.RowType) => {
-  formModalApi.setData(row).open();
+  formModalApiPassword.setData(row).open();
 };
 
 // 删除客户
-const customerDel = (userCodes: string) => {
-  deleteAcount({ userCodes })
+const customerDel = (account: string) => {
+  deleteAcount({ account })
     .then(() => {
       message.success('删除成功');
       gridApi.query();
@@ -152,12 +156,13 @@ function refreshGrid() {
           title="确定要删除吗?"
           ok-text="确定"
           cancel-text="取消"
-          @confirm="customerDel(row.userCode)"
+          @confirm="customerDel(row.account)"
         >
           <Button type="link" danger>删除</Button>
         </Popconfirm>
       </template>
     </Grid>
     <FormModal @success="refreshGrid" />
+    <FormModalPd @success="refreshGrid" />
   </Page>
 </template>
