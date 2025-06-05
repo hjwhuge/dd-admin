@@ -23,7 +23,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'Logs',
         path: '/system/log',
-        component: () => import('#/views/system/logs/index.vue'),
+        component: () => import('#/views/system/userLogs/index.vue'),
         meta: {
           icon: 'lucide:area-chart',
           title: '日志列表',
