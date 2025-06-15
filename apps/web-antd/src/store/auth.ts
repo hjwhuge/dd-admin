@@ -35,8 +35,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       loginLoading.value = true;
       const { token, userType } = await loginApi(params);
-
-      if (userType === '1') {
+      if (userType === '0') {
         userStore.setUserRoles(['super']);
       } else {
         userStore.setUserRoles([]);

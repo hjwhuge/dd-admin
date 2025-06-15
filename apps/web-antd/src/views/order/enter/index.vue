@@ -103,7 +103,7 @@ const gridOptions: VxeTableGridOptions<orderApi.RowType> = {
     { field: 'quantity', title: '数量' },
     { field: 'price', title: '单价' },
     { field: 'packagesNumber', title: '件数' },
-    { field: 'unit', title: '单位/KG' },
+    { field: 'weight', title: '重量' },
     { field: 'basicPrice', title: '基本费用' },
     { field: 'remark', title: '备注' },
     { field: 'selfOrderNumber', title: '厂内订单号' },

@@ -58,8 +58,8 @@ const [Form, formApi] = useVbenForm({
     },
     {
       component: 'Input',
-      fieldName: 'unit',
-      label: '单位/KG',
+      fieldName: 'weight',
+      label: '重量',
     },
     {
       component: 'InputNumber',

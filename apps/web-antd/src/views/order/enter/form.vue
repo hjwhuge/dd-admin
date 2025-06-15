@@ -19,12 +19,14 @@ const emit = defineEmits(['success']);
 
 const keyword = ref('');
 const fetching = ref(false);
+const customerList = ref<any>([]);
 // 模拟远程获取数据
 function fetchRemoteOptions() {
   fetching.value = true;
   return new Promise((resolve) => {
     getCustomerApi({ page: 1, pageSize: 100 })
       .then((res) => {
+        customerList.value = res.data;
         const options = res.data.map((item) => ({
           label: item.userName,
           value: item.userCode,
@@ -69,7 +71,7 @@ const [Form, formApi] = useVbenForm({
         };
       },
       // 字段名
-      fieldName: 'userName',
+      fieldName: 'userCode',
       // 界面显示的label
       label: '客户名称',
       renderComponentContent: () => {
@@ -89,7 +91,6 @@ const [Form, formApi] = useVbenForm({
       component: 'Input',
       fieldName: 'customerOderNumber',
       label: '来货单号',
-      rules: 'required',
     },
     {
       component: 'Input',
@@ -119,12 +120,11 @@ const [Form, formApi] = useVbenForm({
       component: 'InputNumber',
       fieldName: 'packagesNumber',
       label: '件数',
-      rules: 'required',
     },
     {
-      component: 'Input',
-      fieldName: 'unit',
-      label: '单位/KG',
+      component: 'InputNumber',
+      fieldName: 'weight',
+      label: '重量',
       rules: 'required',
     },
     {
@@ -153,6 +153,10 @@ const [Modal, modalApi] = useVbenModal({
     if (valid) {
       modalApi.lock();
       const data = await formApi.getValues();
+      const userName = customerList.value.find(
+        (item) => item.userCode === data.userCode,
+      ).userName;
+      data.userName = userName;
       try {
         await (formData.value?.selfOrderNumber
           ? editPutInStorage({

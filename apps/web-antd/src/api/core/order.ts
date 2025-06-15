@@ -17,6 +17,7 @@ export namespace orderApi {
     price: number;
     packagesNumber: number;
     unit: string;
+    weight: string;
     basicPrice: number;
     remark: string;
     selfOrderNumber: string;
