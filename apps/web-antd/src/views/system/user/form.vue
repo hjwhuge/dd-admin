@@ -45,8 +45,8 @@ const [Form, formApi] = useVbenForm({
       component: 'Select',
       componentProps: {
         options: [
-          { label: '普通账户', value: '1' },
-          { label: '管理员', value: '0' },
+          { label: '普通账户', value: '2' },
+          { label: '管理员', value: '1' },
         ],
         placeholder: '请输入',
         width: 400,

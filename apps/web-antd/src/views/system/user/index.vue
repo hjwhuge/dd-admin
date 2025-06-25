@@ -148,7 +148,7 @@ function refreshGrid() {
   <Page auto-content-height>
     <Grid>
       <template #userType="{ row }">
-        <span>{{ row.userType === '0' ? '管理员' : '普通账户' }}</span>
+        <span>{{ row.userType === '1' ? '管理员' : '普通账户' }}</span>
       </template>
       <template #action="{ row }">
         <Button type="link" @click="customerEdit(row)">修改密码</Button>

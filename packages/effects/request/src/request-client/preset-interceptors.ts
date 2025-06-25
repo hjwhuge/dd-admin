@@ -60,9 +60,9 @@ export const authenticateResponseInterceptor = ({
   return {
     rejected: async (error) => {
       const { config, response } = error;
-      // 如果不是 401 错误，直接抛出异常
+      // 如果不是 400 错误，直接抛出异常
       console.log(response, response?.status);
-      if (response?.status !== 401 || response?.status !== 400) {
+      if (response?.data.code !== 400) {
         throw error;
       }
       // 判断是否启用了 refreshToken 功能

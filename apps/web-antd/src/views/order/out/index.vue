@@ -143,21 +143,22 @@ const gridOptions: VxeTableGridOptions<orderApi.RowType> = {
     resizable: true,
     search: false,
     zoom: false,
-    buttons: [{ name: '导出记录', code: 'add', status: 'primary' }],
+    buttons: [{ name: '导出记录', code: 'export', status: 'primary' }],
   },
 };
 
 const gridEvents: VxeGridListeners = {
   toolbarButtonClick(params) {
-    if (params.code === 'add') {
-      customerAdd();
+    if (params.code === 'exportMy') {
+      // orderExport();
     }
   },
 };
 
-const customerAdd = () => {
-  // formModalApi.setData(null).open();
-};
+// const orderExport = () => {
+//   console.log(Grid, gridApi);
+//   exportOutStorage();
+// };
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions,
