@@ -29,6 +29,15 @@ const routes: RouteRecordRaw[] = [
           title: '日志列表',
         },
       },
+      {
+        name: 'Logs',
+        path: '/system/analytics',
+        component: () => import('#/views/system/analytics/index.vue'),
+        meta: {
+          icon: 'lucide:area-chart',
+          title: '分析页',
+        },
+      },
     ],
   },
 ];
