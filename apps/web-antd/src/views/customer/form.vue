@@ -32,7 +32,7 @@ const [Form, formApi] = useVbenForm({
         placeholder: '请输入',
       },
       fieldName: 'userName',
-      label: '客户名称',
+      label: '客户名称1111111',
       rules: 'required',
     },
     {
@@ -59,6 +59,20 @@ const [Form, formApi] = useVbenForm({
       },
       fieldName: 'userType',
       label: '客户类型',
+      rules: 'required',
+    },
+    {
+      component: 'Select',
+      componentProps: {
+        options: [
+          { label: '禁用', value: false },
+          { label: '启用', value: true },
+        ],
+        placeholder: '请输入',
+        width: 400,
+      },
+      fieldName: 'enble',
+      label: '客户状态',
       rules: 'required',
     },
     {
