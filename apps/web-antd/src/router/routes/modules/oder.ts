@@ -38,6 +38,15 @@ const routes: RouteRecordRaw[] = [
           authority: ['super'],
         },
       },
+      {
+        name: 'Statistics',
+        path: '/order/print',
+        component: () => import('#/views/order/print/index.vue'),
+        meta: {
+          icon: 'lucide:area-chart',
+          title: '打印',
+        },
+      },
     ],
   },
 ];
