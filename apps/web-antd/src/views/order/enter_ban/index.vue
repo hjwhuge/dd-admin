@@ -8,12 +8,11 @@ import type { orderApi } from '#/api';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, message, Popconfirm } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   deletePutInStorage,
-  putInStorageExamine,
   queryPutInStorage,
 } from '#/api';
 
@@ -125,9 +124,9 @@ const gridOptions: VxeTableGridOptions<orderApi.RowType> = {
       field: 'action',
       fixed: 'right',
       title: '操作',
-      width: 260,
+      width: 80,
       headerAlign: 'center',
-      align: 'left',
+      align: 'center',
     },
   ],
   exportConfig: {},
@@ -159,8 +158,8 @@ const gridOptions: VxeTableGridOptions<orderApi.RowType> = {
     search: false,
     zoom: false,
     buttons: [
-      { name: '入货登记', code: 'add', status: 'primary' },
-      { name: '删除', code: 'del', status: 'danger' },
+      // { name: '入货登记', code: 'add', status: 'primary' },
+      // { name: '删除', code: 'del', status: 'danger' },
     ],
   },
 };
@@ -186,28 +185,12 @@ const oderAdd = () => {
   formModalApi.setData(null).open();
 };
 
-const oderEdit = (row: orderApi.RowType) => {
-  formModalApi.setData(row).open();
-};
 
 // 删除客户
 const oderDel = (selfOrderNumbers: string) => {
   deletePutInStorage({ selfOrderNumbers })
     .then(() => {
       message.success('删除成功');
-      gridApi.query();
-    })
-    .catch(() => {});
-};
-
-// 入货审批
-const orderExamine = (row: orderApi.RowType) => {
-  putInStorageExamine({
-    selfOrderNumber: row.selfOrderNumber,
-    examineStatus: !row.examineStatus,
-  })
-    .then(() => {
-      message.success('审批成功');
       gridApi.query();
     })
     .catch(() => {});
@@ -236,18 +219,6 @@ function refreshGrid() {
   <Page auto-content-height>
     <Grid>
       <template #action="{ row }">
-        <Button type="link" @click="oderEdit(row)">编辑</Button>
-        <Popconfirm
-          title="确定要删除吗?"
-          ok-text="确定"
-          cancel-text="取消"
-          @confirm="oderDel(row.selfOrderNumber)"
-        >
-          <Button type="link" danger>删除</Button>
-        </Popconfirm>
-        <Button type="link" @click="orderExamine(row)">
-          {{ row.examineStatus ? '取消审批' : '审批' }}
-        </Button>
         <Button type="link" @click="pound(row)"> 磅货 </Button>
       </template>
     </Grid>

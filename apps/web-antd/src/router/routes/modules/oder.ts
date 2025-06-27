@@ -20,12 +20,21 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        name: 'Enter_ban',
+        path: '/order/enter_ban',
+        component: () => import('#/views/order/enter_ban/index.vue'),
+        meta: {
+          icon: 'lucide:area-chart',
+          title: '磅货管理',
+        },
+      },
+      {
         name: 'Out',
         path: '/order/out',
         component: () => import('#/views/order/out/index.vue'),
         meta: {
           icon: 'lucide:area-chart',
-          title: '出货管理',
+          title: '出货统计',
         },
       },
       {
