@@ -97,13 +97,17 @@ const gridOptions: VxeTableGridOptions<orderApi.RowType> = {
     { title: '序号', type: 'seq', width: 50 },
     { field: 'userName', title: '客户名称', type: 'checkbox', align: 'left' },
     { field: 'productName', title: '产品名称' },
-    { field: 'customerOderNumber', title: '来货单号' },
     { field: 'color', title: '颜色' },
+    { field: 'weight', title: '重量（KG）' },
+    
+    { field: 'price', title: '单价' },
+    { field: 'customerOderNumber', title: '来货单号' },
+    
     { field: 'specification', title: '规格' },
-    { field: 'quantity', title: '数量' },
+    // { field: 'quantity', title: '数量' },
     { field: 'price', title: '单价' },
     { field: 'packagesNumber', title: '件数' },
-    { field: 'weight', title: '重量' },
+    
     { field: 'basicPrice', title: '基本费用' },
     { field: 'remark', title: '备注' },
     { field: 'selfOrderNumber', title: '厂内订单号' },

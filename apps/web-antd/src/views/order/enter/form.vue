@@ -81,6 +81,21 @@ const [Form, formApi] = useVbenForm({
       },
       rules: 'selectRequired',
     },
+    // {
+    //   component: 'Select',
+    //   componentProps: {
+    //     options: [
+    //       { label: '正常', value: 1 },
+    //       { label: '返电', value: 2 },
+    //     ],
+    //     placeholder: '请输入',
+    //     width: 400,
+    //   },
+    //   fieldName: 'enble',
+    //   label: '来货类型',
+    //   rules: 'required',
+    //   defaultValue: 1,
+    // },
     {
       component: 'Input',
       fieldName: 'productName',
@@ -89,43 +104,44 @@ const [Form, formApi] = useVbenForm({
     },
     {
       component: 'Input',
-      fieldName: 'customerOderNumber',
-      label: '来货单号',
-    },
-    {
-      component: 'Input',
       fieldName: 'color',
       label: '颜色',
       rules: 'required',
     },
     {
-      component: 'Input',
-      fieldName: 'specification',
-      label: '规格',
-      rules: 'required',
-    },
-    {
       component: 'InputNumber',
-      fieldName: 'quantity',
-      label: '数量',
+      fieldName: 'weight',
+      label: '重量(KG)',
       rules: 'required',
     },
     {
       component: 'InputNumber',
       fieldName: 'price',
-      label: '单价',
+      label: '单价(元)',
       rules: 'required',
     },
+    {
+      component: 'Input',
+      fieldName: 'customerOderNumber',
+      label: '来货单号',
+    },
+    
+    {
+      component: 'Input',
+      fieldName: 'specification',
+      label: '规格',
+      // rules: 'required',
+    },
+    // {
+    //   component: 'InputNumber',
+    //   fieldName: 'quantity',
+    //   label: '数量(KG)',
+     
+    // },
     {
       component: 'InputNumber',
       fieldName: 'packagesNumber',
       label: '件数',
-    },
-    {
-      component: 'InputNumber',
-      fieldName: 'weight',
-      label: '重量',
-      rules: 'required',
     },
     {
       component: 'InputNumber',

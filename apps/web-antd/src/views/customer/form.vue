@@ -32,7 +32,7 @@ const [Form, formApi] = useVbenForm({
         placeholder: '请输入',
       },
       fieldName: 'userName',
-      label: '客户名称1111111',
+      label: '客户名称',
       rules: 'required',
     },
     {
@@ -142,7 +142,7 @@ const [Modal, modalApi] = useVbenModal({
                 content: '新增成功',
               });
             }));
-        // modalApi.close();
+        modalApi.close();
         emit('success');
       } finally {
         modalApi.lock(false);
