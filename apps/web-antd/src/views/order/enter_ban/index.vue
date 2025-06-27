@@ -11,10 +11,7 @@ import { Page, useVbenModal } from '@vben/common-ui';
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  deletePutInStorage,
-  queryPutInStorage,
-} from '#/api';
+import { deletePutInStorage, queryPutInStorage } from '#/api';
 
 import FormModalEdit from './form.vue';
 import FormModalPoundEdit from './formPound.vue';
@@ -184,7 +181,6 @@ const gridEvents: VxeGridListeners = {
 const oderAdd = () => {
   formModalApi.setData(null).open();
 };
-
 
 // 删除客户
 const oderDel = (selfOrderNumbers: string) => {
